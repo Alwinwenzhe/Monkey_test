@@ -120,7 +120,6 @@ class PyMonkey():
                 if self.testmodel.strip() > '0' and self.testmodel.isalnum():
                     self.testmodel = str(int(self.testmodel) + 1)
                     wd = open(file_cmd, 'w')
-                    wd.write('data /t && time /t')
                     wd.write(':loop')
                     wd.write('\nset /a num+=1')
                     wd.write('\nif "%num%"=="' + self.testmodel + '" goto end')
@@ -145,7 +144,7 @@ class PyMonkey():
             if os.path.isfile(os.path.join(self.path_app, file)) == True:
                 if file.find('.cmd') > 0:
                     os.system('start ' + os.path.join(self.path_app, '"' + file + '"'))  # dos命令中文件名如果有空格，需加上双引号
-                    time.sleep(4)
+                    time.sleep(6)
 
 
 if __name__ == '__main__':
