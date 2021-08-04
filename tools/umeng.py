@@ -55,7 +55,7 @@ class UMeng(object):
         :return:
         '''
         try:
-            ob = WebDriverWait(self.driver,20).until(EC.presence_of_all_element_located((By.XPATH,para)))
+            ob = WebDriverWait(self.driver,20).until(EC.presence_of_element_located((By.XPATH,para)))
         except NoSuchElementException as e:
             print(e)
         return ob
@@ -75,9 +75,9 @@ class UMeng(object):
         # 检验滑块
         drag_slider = self.wait_ele_xpath('//*[@id="nc_1_n1z"]')
         if drag_slider:
-            # 获取元素宽度
-            drag_slider_width = drag_slider.size
-            print(drag_slider_width)
+            # 获取元素宽度---这里是0，，，
+            slider_size = drag_slider.size
+            drag_slider_width = slider_size['width']
             # 创建一个新的ActionChains，将webdriver实例对driver作为参数值传入，然后通过WenDriver实例执行用户动作
             action_chains = ActionChains(self.driver)
             # 拖动
