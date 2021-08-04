@@ -137,7 +137,7 @@ class PyMonkey():
 
     def RunMonkey(self,*args,**kwargs):
         '''
-        运行入口
+        入口
         :return:
         '''
         self.CreateMonkeyFile()
