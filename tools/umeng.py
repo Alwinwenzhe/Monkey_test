@@ -95,9 +95,13 @@ class UMeng(object):
             action_chains.click_and_hold(drag_slider).perform()
             # 拖动
             action_chains.drag_and_drop_by_offset(drag_slider,255,0).perform()
+            time.sleep(2)
+        # 元素被隐藏
+        # self.febx('//*[@id="fm-login-submit"]').click()
+        login_js = "javascript:document.getElementsByName('submit-btn')[0].click()"
         time.sleep(2)
-        time.sleep(1)
-        self.febx('//*[@id="fm-login-submit"]').click()
+        self.driver.execute_script(login_js)
+
 
         # 自查通知
         notice = self.wait_ele_xpath('//*[@id="popup-back"]/div/div[3]/button')

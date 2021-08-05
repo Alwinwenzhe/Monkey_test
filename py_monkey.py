@@ -34,7 +34,8 @@ class PyMonkey():
 
         print("monkey测试即将开始......\n Monkey单次运行的事件数默认为20000")
         # self.count = input("请输入Monkey单次运行时，事件数：")
-        self.testmodel = input("请输入Monkey循环运行次数：")
+        self.testmodel = 3
+        # self.testmodel = input("请输入Monkey循环运行次数：")
         self.ds = []
         self.model_list = []
         for i in range(n):
