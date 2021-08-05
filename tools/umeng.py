@@ -60,6 +60,17 @@ class UMeng(object):
             print(e)
         return ob
 
+    def wait_eles_xpath(self,para):
+        '''
+        通过xpath等待对象list出现
+        :return:
+        '''
+        try:
+            ob = WebDriverWait(self.driver,20).until(EC.presence_of_all_elements_located((By.XPATH,para)))
+        except NoSuchElementException as e:
+            print(e)
+        return ob
+
     def um_login(self,*args,**kwargs):
         '''
         登录模块
@@ -71,18 +82,21 @@ class UMeng(object):
         self.driver.switch_to.frame('alibaba-login-box')
         self.febx('//*[@id="fm-login-id"]').send_keys("chenwenzhecd")
         self.febx('//*[@id="fm-login-password"]').send_keys('123456ab!@')
-
+        time.sleep(8)
+        self.driver.switch_to.frame('baxia-dialog-content')
         # 检验滑块
-        drag_slider = self.wait_ele_xpath('//*[@id="nc_1_n1z"]')
+        drag_slider = self.wait_ele_xpath('//*[@id="nc_2_n1z"]')
+        # d.find_element_by_xpath("//span[starts-with(@id, 'total_fee_')]")
         if drag_slider:
-            # 获取元素宽度---这里是0，，，
-            slider_size = drag_slider.size
-            drag_slider_width = slider_size['width']
+
             # 创建一个新的ActionChains，将webdriver实例对driver作为参数值传入，然后通过WenDriver实例执行用户动作
             action_chains = ActionChains(self.driver)
+            # 鼠标左键按下不放
+            action_chains.click_and_hold(drag_slider).perform()
             # 拖动
-            action_chains.drag_and_drop_by_offset(drag_slider,drag_slider_width,0).perform()
-            time.sleep(3)
+            action_chains.drag_and_drop_by_offset(drag_slider,255,0).perform()
+        time.sleep(2)
+        time.sleep(1)
         self.febx('//*[@id="fm-login-submit"]').click()
 
         # 自查通知

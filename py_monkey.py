@@ -10,6 +10,7 @@ class PyMonkey():
         self.app_name = "com.jmbon.android"
         self.path = os.path.abspath(os.path.dirname(__file__)) + r'\bugreport_out'
 
+
     def run_time(self,end,start,*args,**kwargs):
         '''
         运行时长
@@ -74,12 +75,8 @@ class PyMonkey():
                 os.mkdir(self.path)
 
             self.path_app = self.path + '\\' + self.app_name
-            filedir = os.path.exists(self.path_app)
-            if filedir:
-                # print("File Exist!")
-                pass
-            else:
-                os.mkdir(self.path_app)
+            os.removedirs(self.path_app)  # 递归删除目录。子目录删除完成后，删除父目录；如果子目录没有成功删除，则报错
+            os.mkdir(self.path_app)        # 重新创建
 
             ds_i = 0
             for i in self.model_list:
@@ -104,15 +101,15 @@ class PyMonkey():
                 file_cmd = self.path_app + '\\' + i + '.cmd'
                 # 通用monkey命令
                 # 指定系统事件百分比
-                syskeys = 1
+                syskeys = 3
                 # 调整触摸事件的百分比
-                touch = 75
+                touch = 85
                 # 调整动作事件的百分比
-                motion = 14
+                motion = 4
                 # 指定Activity启动的百分比
                 appswitch = 0
                 # 指定其他事件的百分比
-                anyevent = 10
+                anyevent = 8
                 # 在事件之间插入特定的延时时间
                 throttle = 300
                 cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-touch {} --pct-appswitch {} --pct-anyevent {} --pct-motion {} --throttle {} -s %random% -v 20000 > {}\\monkey_%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
