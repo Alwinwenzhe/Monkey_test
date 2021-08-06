@@ -10,6 +10,19 @@ class PyMonkey():
         self.app_name = "com.jmbon.android"
         self.path = os.path.abspath(os.path.dirname(__file__)) + r'\bugreport_out'
 
+    def del_history_cmd(self,app_path):
+        '''
+        删除历史文件
+        :param app_path:
+        :return:
+        '''
+        # 获取该目录下文件名称和目录名称
+        dir_or_files = os.listdir(app_path)
+        for dir in dir_or_files:
+            # 删除历史cmd
+            if dir.endswith(".cmd"):
+                print(dir)
+                os.remove(app_path + r'\\' + dir)
 
     def run_time(self,end,start,*args,**kwargs):
         '''
@@ -32,10 +45,9 @@ class PyMonkey():
         n = len(rt) - 2
         print("当前已连接待测手机数为：" + str(n))
 
-        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为20000")
+        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为2000")
         # self.count = input("请输入Monkey单次运行时，事件数：")
-        self.testmodel = 3
-        # self.testmodel = input("请输入Monkey循环运行次数：")
+        self.testmodel = input("请输入Monkey循环运行次数：")
         self.ds = []
         self.model_list = []
         for i in range(n):
@@ -76,8 +88,15 @@ class PyMonkey():
                 os.mkdir(self.path)
 
             self.path_app = self.path + '\\' + self.app_name
-            os.removedirs(self.path_app)  # 递归删除目录。子目录删除完成后，删除父目录；如果子目录没有成功删除，则报错
-            os.mkdir(self.path_app)        # 重新创建
+            # os.removedirs(self.path_app)  # 递归删除目录。子目录删除完成后，删除父目录；如果子目录没有成功删除，则报错
+            # time.sleep(3)
+            if  self.path_app:
+                # print ("File Exist!")
+                pass
+            else:
+                os.mkdir(self.path_app)        # 重新创建
+
+            self.del_history_cmd(self.path_app)
 
             ds_i = 0
             for i in self.model_list:
@@ -90,7 +109,6 @@ class PyMonkey():
                     pass
                 else:
                     os.mkdir(path_device)
-
                 file_cmd = self.path_app + '\\' + i + '- ' + '.cmd'
                 wl = open(file_cmd, 'w')
 
@@ -113,7 +131,7 @@ class PyMonkey():
                 anyevent = 8
                 # 在事件之间插入特定的延时时间
                 throttle = 300
-                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-touch {} --pct-appswitch {} --pct-anyevent {} --pct-motion {} --throttle {} -s %random% -v 20000 > {}\\monkey_%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
+                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-touch {} --pct-appswitch {} --pct-anyevent {} --pct-motion {} --throttle {} -s %random% -v 2000 > {}\\monkey_%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
                     self.ds[ds_i], self.app_name, syskeys, touch, motion, appswitch, anyevent, throttle,path_device)
                 if self.testmodel.strip() > '0' and self.testmodel.isalnum():
                     self.testmodel = str(int(self.testmodel) + 1)
