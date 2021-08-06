@@ -11,9 +11,10 @@ def get_file_path(root_path, file_list, dir_list):
 			# 递归获取所有文件和目录的路径
 			get_file_path(dir_file_path, file_list, dir_list)
 		else:
-			file_list.append(dir_file_path);
+			os.remove(root_path + dir_file)
 
 if __name__ == '__main__':
-    file_list = []
-    dir_list = []
-    root_path = os.path.abspath(os.path.dirname(__file__)) + r'\bugreport_out' + r"\com.jmbon.android"
+	file_list = []
+	dir_list = []
+	root_path = os.path.abspath(os.path.dirname(__file__)) + r'\bugreport_out' + r"\com.jmbon.android"
+	get_file_path(root_path,file_list,dir_list)
