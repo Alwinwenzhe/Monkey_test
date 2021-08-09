@@ -1,28 +1,34 @@
 # STATUS: PASS
 # Time: 2021-08-02
+# Comment：麦芒5运行路径始终有问题
 
 import os, time
 import datetime
 
+
+def remove_file_files(root_path, file_list, dir_list):
+    # 删除该目录下所有的文件名称和目录名称
+    dir_or_files = os.listdir(root_path);
+    for dir_file in dir_or_files:
+        # 获取目录或者文件的路径
+        dir_file_path = os.path.join(root_path, dir_file)
+        # 判断该路径为文件还是路径
+        if os.path.isdir(dir_file_path):
+            dir_list.append(dir_file_path)
+            # 递归获取所有文件和目录的路径
+            remove_file_files(dir_file_path, file_list, dir_list)
+        else:
+            os.remove(os.path.join(root_path, dir_file))
+
 class PyMonkey():
+
+    file_list = []
+    dir_list = []
 
     def __init__(self,*args,**kwargs):
         self.app_name = "com.jmbon.android"
         self.path = os.path.abspath(os.path.dirname(__file__)) + r'\bugreport_out'
-
-    def del_history_cmd(self,app_path):
-        '''
-        删除历史文件
-        :param app_path:
-        :return:
-        '''
-        # 获取该目录下文件名称和目录名称
-        dir_or_files = os.listdir(app_path)
-        for dir in dir_or_files:
-            # 删除历史cmd
-            if dir.endswith(".cmd"):
-                print(dir)
-                os.remove(app_path + r'\\' + dir)
+        remove_file_files(self.path,file_list=self.file_list,dir_list=self.dir_list)
 
     def run_time(self,end,start,*args,**kwargs):
         '''
@@ -45,7 +51,7 @@ class PyMonkey():
         n = len(rt) - 2
         print("当前已连接待测手机数为：" + str(n))
 
-        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为2000")
+        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为500")
         # self.count = input("请输入Monkey单次运行时，事件数：")
         self.testmodel = input("请输入Monkey循环运行次数：")
         self.ds = []
@@ -96,8 +102,6 @@ class PyMonkey():
             else:
                 os.mkdir(self.path_app)        # 重新创建
 
-            self.del_history_cmd(self.path_app)
-
             ds_i = 0
             for i in self.model_list:
                 # 按设备ID生成日志目录文件夹
@@ -113,32 +117,32 @@ class PyMonkey():
                 wl = open(file_cmd, 'w')
 
                 wl.write(
-                    'adb -s ' + self.ds[ds_i] + ' logcat -v time *:W > ' + path_device + '\\logcat_%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n')
+                    'adb -s ' + self.ds[ds_i] + ' logcat -v time *:W > ' + path_device + '\\logcat_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n')
                 wl.close()
 
                 # monkey脚本文件
                 file_cmd = self.path_app + '\\' + i + '.cmd'
                 # 通用monkey命令
                 # 指定系统事件百分比
-                syskeys = 3
-                # 调整触摸事件的百分比
-                touch = 85
+                syskeys = 0
+                # # 调整触摸事件的百分比
+                # touch = 85
                 # 调整动作事件的百分比
-                motion = 4
-                # 指定Activity启动的百分比
-                appswitch = 0
-                # 指定其他事件的百分比
-                anyevent = 8
+                motion = 0
+                # # 指定Activity启动的百分比
+                # appswitch = 0
+                # # 指定其他事件的百分比
+                # anyevent = 8
                 # 在事件之间插入特定的延时时间
                 throttle = 300
-                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-touch {} --pct-appswitch {} --pct-anyevent {} --pct-motion {} --throttle {} -s %random% -v 2000 > {}\\monkey_%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
-                    self.ds[ds_i], self.app_name, syskeys, touch, motion, appswitch, anyevent, throttle,path_device)
+                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v 500 > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
+                    self.ds[ds_i], self.app_name, syskeys, motion, throttle,path_device)
                 if self.testmodel.strip() > '0' and self.testmodel.isalnum():
-                    self.testmodel = str(int(self.testmodel) + 1)
+                    self.run_times = str(int(self.testmodel) + 1)
                     wd = open(file_cmd, 'w')
                     wd.write(':loop')
                     wd.write('\nset /a num+=1')
-                    wd.write('\nif "%num%"=="' + self.testmodel + '" goto end')
+                    wd.write('\nif "%num%"=="' + self.run_times + '" goto end')
                     wd.write('\n' + cmd_s)
                     wd.write('@echo 测试成功完成，请查看日志文件~')
                     wd.write('\nadb -s ' + self.dev + ' shell am force-stop ' + self.app_name)
@@ -160,7 +164,7 @@ class PyMonkey():
             if os.path.isfile(os.path.join(self.path_app, file)) == True:
                 if file.find('.cmd') > 0:
                     os.system('start ' + os.path.join(self.path_app, '"' + file + '"'))  # dos命令中文件名如果有空格，需加上双引号
-                    time.sleep(6)
+                    time.sleep(3)
 
 
 if __name__ == '__main__':
