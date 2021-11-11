@@ -1,5 +1,5 @@
 # STATUS: PASS
-# Time: 2021-08-02
+# Time: 2021-11-10
 # Comment：麦芒5运行路径始终有问题
 
 import os, time
@@ -137,8 +137,10 @@ class PyMonkey():
                 # anyevent = 8
                 # 在事件之间插入特定的延时时间
                 throttle = 300
-                cmd_s = 'adb -s {} shell monkey --pkg-blacklist-file {} --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v {} > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
-                    self.ds[ds_i], '/data/local/tmp/blacklist.txt', syskeys, motion, throttle,int(self.count),path_device)
+                # cmd_s = 'adb -s {} shell monkey -p com.jmbon.android --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v {} > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
+                #     self.ds[ds_i], '/data/local/tmp/blacklist.txt', syskeys, motion, throttle,int(self.count),path_device)
+                cmd_s = 'adb -s {} shell monkey -p {} --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v {} > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
+                    self.ds[ds_i], self.app_name, syskeys, motion, throttle, int(self.count), path_device)
                 if self.testmodel.strip() > '0' and self.testmodel.isalnum():
                     self.run_times = str(int(self.testmodel) + 1)
                     wd = open(file_cmd, 'w')
