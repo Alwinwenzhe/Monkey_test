@@ -51,7 +51,7 @@ class PyMonkey():
         n = len(rt) - 2
         print("当前已连接待测手机数为：" + str(n))
 
-        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为10000")
+        print("monkey测试即将开始......\n Monkey单次运行的事件数默认为40000")
         # self.count = input("请输入Monkey单次运行时，事件数：")
         self.testmodel = input("请输入Monkey循环运行次数：")
         self.ds = []
@@ -135,7 +135,7 @@ class PyMonkey():
                 # anyevent = 8
                 # 在事件之间插入特定的延时时间
                 throttle = 300
-                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v 10000 > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
+                cmd_s = 'adb -s {} shell monkey -p {} --monitor-native-crashes --ignore-crashes --pct-syskeys {} --pct-motion {} --throttle {} -s %random% -v 40000 > {}\\monkey_%Date:~0,4%%Date:~5,2%%Date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%.txt\n'.format(
                     self.ds[ds_i], self.app_name, syskeys, motion, throttle,path_device)
                 if self.testmodel.strip() > '0' and self.testmodel.isalnum():
                     self.run_times = str(int(self.testmodel) + 1)
@@ -167,7 +167,7 @@ class PyMonkey():
                     time.sleep(3)
 
     # 装饰器完成日志分析
-    
+
 
 if __name__ == '__main__':
     pm = PyMonkey()
